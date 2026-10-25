@@ -12,7 +12,7 @@ window.GOFILE_CONFIG = {
   owner: 'filovskiy',          // владелец репозитория-хранилища
   repo: 'gofile',              // репозиторий-хранилище
   branch: 'main',
-  token: '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',                   // <-- вставьте токен сюда, чтобы включить загрузки
+  token: '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',                   // <-- вставьте токен сюда, чтобы включить загрузки
   maxBytes: 40 * 1024 * 1024,  // лимит размера файла (GitHub Contents API)
   ttlDays: 7                   // срок хранения; синхронизирован с purge.yml
 };
