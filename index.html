@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; connect-src https://api.github.com https://raw.githubusercontent.com; img-src 'self' data:; base-uri 'none'">
+<title>gofile — анонимная передача файлов</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
+<script src="app.js" defer></script>
+</head>
+<body>
+<main class="wrap">
+  <header>
+    <div class="brand">gofile<span class="cursor">_</span></div>
+    <p class="tagline">анонимная передача файлов по hex-id &middot; шифрование в браузере &middot; без аккаунтов</p>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button id="tab-send" class="tab active" role="tab" aria-selected="true">Отправить</button>
+    <button id="tab-get" class="tab" role="tab" aria-selected="false">Получить</button>
+  </nav>
+
+  <section id="panel-send" class="panel card" role="tabpanel">
+    <div id="token-box" class="notice" hidden>
+      <b>Загрузка отключена:</b> владелец не настроил токен (README, раздел «Токен»).
+      <details>
+        <summary>вставить свой токен в этот браузер</summary>
+        <div class="token-row">
+          <input id="token-input" type="password" placeholder="github_pat_…" autocomplete="off" spellcheck="false">
+          <button id="token-save" class="btn small" type="button">сохранить</button>
+        </div>
+        <p class="hint">fine-grained PAT, доступ Contents: Read and write только к репозиторию gofile. Хранится в localStorage этого браузера, никуда не отправляется кроме api.github.com.</p>
+      </details>
+    </div>
+
+    <div id="dropzone" class="drop" tabindex="0" role="button" aria-label="Выбрать файл для отправки">
+      <div class="drop-icon">&#8673;</div>
+      <div class="drop-title">перетащите файл сюда или нажмите</div>
+      <div class="drop-hint" id="drop-hint">до 40 МБ &middot; шифруется до отправки</div>
+      <input id="file-input" type="file" hidden>
+    </div>
+
+    <div id="upload-progress" class="progress" hidden>
+      <div class="stage" id="upload-stage">…</div>
+      <div class="bar"><div class="fill" id="upload-bar"></div></div>
+      <div class="pct" id="upload-pct">0%</div>
+    </div>
+
+    <div id="upload-result" class="result" hidden>
+      <div class="ok">&#10003; файл зашифрован и загружен</div>
+      <div class="label">hex-id — передайте его получателю:</div>
+      <div class="hexid" id="result-id">…</div>
+      <div class="label">или ссылка целиком:</div>
+      <div class="sharelink" id="result-link">…</div>
+      <div class="row">
+        <button id="btn-copy-id" class="btn" type="button">копировать id</button>
+        <button id="btn-copy-link" class="btn ghost" type="button">копировать ссылку</button>
+        <button id="btn-new" class="btn ghost" type="button">новый файл</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="panel-get" class="panel card" role="tabpanel" hidden>
+    <label class="label" for="hex-input">введите hex-id, который вам передали</label>
+    <input id="hex-input" class="hex-input" spellcheck="false" autocomplete="off"
+           placeholder="xxxxxxxx xxxxxxxx xxxxxxxx xxxxxxxx">
+    <div class="row">
+      <button id="btn-get" class="btn" type="button">Скачать и расшифровать</button>
+    </div>
+    <div id="get-status" class="stage" hidden></div>
+  </section>
+
+  <footer>
+    <p>файл шифруется на устройстве (AES-256-GCM, ключ выводится из hex-id) &middot; сервер хранит только шифртекст &middot; автоснос через 7 дней &middot; нет аккаунтов, куков, аналитики и внешних запросов</p>
+  </footer>
+</main>
+</body>
+</html>
