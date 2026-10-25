@@ -347,11 +347,15 @@ els.hex.addEventListener('keydown', (e) => { if (e.key === 'Enter') download(els
 els.dropHint.textContent =
   `до ${fmtBytes(cfg.maxBytes)} · шифруется до отправки · хранение ${cfg.ttlDays} дн.`;
 
-// ссылка вида #id=… сразу открывает вкладку получения
-const m = location.hash.match(/id=([0-9a-fA-F]{32})/);
-if (m) {
-  switchTab('get');
-  els.hex.value = fmtId(m[1].toLowerCase());
-}
+// ссылка вида #id=… открывает вкладку получения и заполняет поле
+const applyHash = () => {
+  const m = location.hash.match(/id=([0-9a-fA-F]{32})/);
+  if (m) {
+    switchTab('get');
+    els.hex.value = fmtId(m[1].toLowerCase());
+  }
+};
+applyHash();
+window.addEventListener('hashchange', applyHash);
 
 })();
