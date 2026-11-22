@@ -1,0 +1,43 @@
+name: purge
+
+# Ежедневно удаляет файлы старше TTL (7 дней).
+# Файлы лежат в files/YYYY-MM-DD/, дата = UTC-день загрузки, поэтому
+# возраст определяется сравнением имени директории со строкой даты.
+
+on:
+  schedule:
+    - cron: "23 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Remove expired files
+        run: |
+          set -e
+          mkdir -p files
+          cutoff=$(date -u -d "7 days ago" +%F)
+          removed=0
+          for d in files/????-??-??/; do
+            [ -d "$d" ] || continue
+            dname="${d#files/}"; dname="${dname%/}"
+            if [[ "$dname" < "$cutoff" ]]; then
+              echo "purge files/$dname"
+              git rm -rq "files/$dname"
+              removed=1
+            fi
+          done
+          if [ "$removed" = 1 ]; then
+            git config user.name "gofile-bot"
+            git config user.email "gofile-bot@users.noreply.github.com"
+            git commit -m "purge expired files"
+            git push
+          else
+            echo "nothing to purge"
+          fi
